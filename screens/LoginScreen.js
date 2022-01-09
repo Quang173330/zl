@@ -6,66 +6,63 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import {
-    SafeAreaView,
-    SafeAreaProvider,
-    SafeAreaInsetsContext,
-    useSafeAreaInsets,
-    initialWindowMetrics,
-  } from 'react-native-safe-area-context';
+import { Alert } from "react-native";
+import { URI } from '../constants/config';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import * as colors from '../constants/colors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function LogInScreen({ navigation }) {
     const [phonenumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
-    const onLogin = () => {
-        navigation.navigate('HomeScreen');
-        // const url = ''
-        // await axios({
-        //     method: 'post',
-        //     url: url,
-        //     data: {
-        //         phonenumber: phonenumber,
-        //         password: password,
-        //     }
-        // })
-        // .then((res)=> {
-        //     navi
-        // })
+    const onLogin = async () => {
+        const response = await fetch('http://0e19-116-97-107-146.ngrok.io/api/v1/users/login', {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                phonenumber: phonenumber,
+                password: password,
+            }),
+        });
+        const res = await response.json()
+        AsyncStorage.setItem('token', res.token);
+        navigation.navigate('MainScreen');
     }
 
     return (
         <View style={styles.container}>
-                <View style={styles.title}>
-                    <Text style={styles.textTitle}>
-                        VUi lòng nhập số điện thoại và mật khẩu để đăng nhập.
-                    </Text>
-                </View>
-                <View style={styles.inputContainer}>
-                    <TextInput
-                        placeholder="Số điện thoại"
-                        autoFocus={true}
-                        style={styles.input}
-                        value={phonenumber}
-                        onChangeText={text => setPhoneNumber(text)}
-                    />
-                    <TextInput
-                        placeholder="Mật khẩu"
-                        secureTextEntry={true}
-                        style={styles.input}
-                        value={password}
-                        onChangeText={text => setPassword(text)}
-                    />
-                </View>
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity
-                        style={styles.button}
-                        onPress={onLogin}
-                    >
-                        <FontAwesome5 name={'arrow-right'} size={16} color={colors.WHITE} />
-                    </TouchableOpacity>
-                </View>
+            <View style={styles.title}>
+                <Text style={styles.textTitle}>
+                    VUi lòng nhập số điện thoại và mật khẩu để đăng nhậ.
+                </Text>
+            </View>
+            <View style={styles.inputContainer}>
+                <TextInput
+                    placeholder="Số điện thoại"
+                    autoFocus={true}
+                    style={styles.input}
+                    value={phonenumber}
+                    onChangeText={text => setPhoneNumber(text)}
+                />
+                <TextInput
+                    placeholder="Mật khẩu"
+                    secureTextEntry={true}
+                    style={styles.input}
+                    value={password}
+                    onChangeText={text => setPassword(text)}
+                />
+            </View>
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={onLogin}
+                >
+                    <FontAwesome5 name={'arrow-right'} size={16} color={colors.WHITE} />
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }
