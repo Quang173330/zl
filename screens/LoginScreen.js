@@ -16,7 +16,7 @@ function LogInScreen({ navigation }) {
     const [phonenumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
     const onLogin = async () => {
-        const response = await fetch('http://0e19-116-97-107-146.ngrok.io/api/v1/users/login', {
+        const response = await fetch(URI+ 'users/login', {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -28,6 +28,10 @@ function LogInScreen({ navigation }) {
             }),
         });
         const res = await response.json()
+        const user = JSON.stringify(res.data)
+        AsyncStorage.setItem('user', user);
+        const a = await AsyncStorage.getItem('user')
+        console.log(typeof a)
         AsyncStorage.setItem('token', res.token);
         navigation.navigate('MainScreen');
     }

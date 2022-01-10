@@ -8,6 +8,8 @@ import SignUpScreen from './SignUpScreen';
 import HomeScreen from './HomeScreen';
 import SearchScreen from './SearchScreen';
 import PhoneScreen from './PhoneScreen';
+import DiaryScreen from './DiaryScreen';
+import PostDiaryScreen from './PostDiaryScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -16,6 +18,8 @@ export default function MainScreen() {
         <Tab.Navigator initialRouteName="MessageScreen">
             <Tab.Screen name="Message" component={PhoneScreen} ></Tab.Screen>
             <Tab.Screen name="Phone" component={HomeScreen} ></Tab.Screen>
+            <Tab.Screen name="Post" component={PostDiaryScreen} ></Tab.Screen>
+            <Tab.Screen name="Nhật Ký" component={DiaryScreen} ></Tab.Screen>
         </Tab.Navigator>
     );
 }
