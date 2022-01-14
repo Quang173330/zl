@@ -24,9 +24,10 @@ function DiaryScreen({ navigation }) {
     const [refreshing, setRefreshing] = useState(false);
     const [posts, setPosts] = useState([]);
     const [user, setUser] = useState(null);
+    const [token, setToken] = useState(null);
+    const [refresh, setRefresh]=useState(false);
     const onRefresh = React.useCallback(async () => {
-        setRefreshing(true);
-        const token = await AsyncStorage.getItem('token');
+        // setRefreshing(true);
         const response = await fetch(URI + 'posts/list', {
             method: "GET",
             headers: {
@@ -39,7 +40,7 @@ function DiaryScreen({ navigation }) {
         const res = await response.json();
         res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         setPosts(res.data);
-        setRefreshing(false);
+        // setRefreshing(false);
 
     }, []);
 
@@ -48,6 +49,7 @@ function DiaryScreen({ navigation }) {
         setUser(JSON.parse(user));
 
         const token = await AsyncStorage.getItem('token');
+        setToken(token)
         const response = await fetch(URI + 'posts/list', {
             method: "GET",
             headers: {
@@ -64,19 +66,22 @@ function DiaryScreen({ navigation }) {
     }, []);
     const renderItem = ({ item }) => {
 
-        // const handleLike = () => {
-        //     let newLikes = [...item.likes];
-
-        //     if (liked) {
-        //         newLikes.splice(likedIndex, 1);
-        //     } else {
-        //         newLikes.push(user.uid);
-        //     }
-
-        //     firestore().collection('Diaries').doc(item.key).update({
-        //         likes: newLikes,
-        //     });
-        // };
+        const handleLike = async () => {
+            const response = await fetch(URI + 'postLike/action/' + item._id, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    authorization: "Bearer " + token,
+                },
+                body: JSON.stringify(),
+            });
+            const res = await response.json();
+            item.isLike = !item.isLike
+            item.like = res.data.like
+            setPosts(posts)
+            setRefresh(!refresh)
+        };
 
         return (
             <View style={styles.diaryContainer}>
@@ -141,7 +146,7 @@ function DiaryScreen({ navigation }) {
                 <View style={styles.actionsContainer}>
                     <TouchableOpacity
                         style={styles.action}
-                    // onPress={handleLike}
+                        onPress={handleLike}
                     >
                         <Ionicons
                             name={item.isLike ? 'heart' : 'heart-outline'}
@@ -151,10 +156,10 @@ function DiaryScreen({ navigation }) {
                         <Text style={styles.textAction}>{item.like.length}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                    // style={styles.action}
-                    // onPress={() =>
-                    //     navigation.navigate('CommentScreen', { diaryId: item.key })
-                    // }
+                    style={styles.action}
+                    onPress={() =>
+                        navigation.navigate('CommentScreen', { postId: item._id })
+                    }
                     >
                         <Ionicons
                             name="chatbox-ellipses-outline"
@@ -194,6 +199,7 @@ function DiaryScreen({ navigation }) {
                     }
                     data={posts}
                     renderItem={renderItem}
+                    extraData={refresh}
                 />
             </ScrollView>
         </View>

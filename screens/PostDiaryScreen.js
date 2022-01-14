@@ -202,7 +202,6 @@ function PostDiaryScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 25,
     backgroundColor: colors.WHITE,
     flex: 1,
   },
