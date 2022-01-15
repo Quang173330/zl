@@ -16,7 +16,7 @@ const Tab = createBottomTabNavigator();
 export default function MainScreen() {
     return (
         <Tab.Navigator initialRouteName="MessageScreen">
-            <Tab.Screen name="Message" component={PhoneScreen} ></Tab.Screen>
+            <Tab.Screen name="Messages" component={MessageScreen} ></Tab.Screen>
             <Tab.Screen name="Phone" component={HomeScreen} ></Tab.Screen>
             <Tab.Screen name="Post" component={PostDiaryScreen} ></Tab.Screen>
             <Tab.Screen name="Nhật Ký" component={DiaryScreen} ></Tab.Screen>

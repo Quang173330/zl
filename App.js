@@ -11,6 +11,8 @@ import DiaryScreen from "./screens/DiaryScreen.js";
 import MainScreen from "./screens/MainScreen.js";
 import PostDiaryScreen from "./screens/PostDiaryScreen.js";
 import CommentScreen from "./screens/CommentScreen.js";
+import ChatScreen from "./screens/ChatScreen.js";
+
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -31,6 +33,7 @@ function App() {
         <Stack.Screen name="PostDiaryScreen" component={PostDiaryScreen} />
         <Stack.Screen name="DiaryScreen" component={DiaryScreen} />
         <Stack.Screen name="CommentScreen" component={CommentScreen} />
+        <Stack.Screen name="ChatScreen" component={ChatScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
