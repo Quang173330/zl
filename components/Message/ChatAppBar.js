@@ -3,7 +3,6 @@ import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import * as colors from '../../constants/colors';
-import { Zocial } from '@expo/vector-icons'; 
 
 function ChatAppBar({navigation, user,socket}) {
   return (
