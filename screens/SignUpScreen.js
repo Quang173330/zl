@@ -41,7 +41,7 @@ function SignUpScreen({ navigation }) {
             Alert.alert("Vui lòng nhập mật khẩu đúng định dạng.");
             return;
         }
-        fetch(URI+ 'users/login', {
+        fetch(URI+ 'users/register', {
             method: "POST",
             headers: {
                 Accept: "application/json",
