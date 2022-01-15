@@ -5,21 +5,75 @@ import {
     TextInput,
     TouchableOpacity,
     View,
+    Alert,
 } from 'react-native';
+import { URI } from '../constants/config';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import * as colors from '../constants/colors';
 
-function SignUpScreen() {
+function SignUpScreen({ navigation }) {
     const [username, setUserName] = useState('');
     const [phonenumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
+
+    const onRegister = async () => {
+        if(username === '') {
+            Alert.alert("Vui lòng nhập tên tài khoản");
+            return;
+        }
+        if(phonenumber === '') {
+            Alert.alert("Vui lòng nhập số điện thoại");
+            return;
+        }
+        if(password === '') {
+            Alert.alert("Vui lòng nhập mật khẩu");
+            return;
+        }
+        if(!username.match(/^[0-9a-zA-Z]{1,}$/)) {
+            Alert.alert("Vui lòng nhập tên tài khoản đúng định dạng.");
+            return;
+        }
+        if(!phonenumber.match(/^\d{10}$/)) {
+            Alert.alert("Vui lòng nhập số điện thoại đúng định dạng.");
+            return;
+        }
+        if(!password.match(/^[0-9a-zA-Z]{6,}$/)) {
+            Alert.alert("Vui lòng nhập mật khẩu đúng định dạng.");
+            return;
+        }
+        fetch(URI+ 'users/login', {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                phonenumber: phonenumber,
+                password: password,
+            }),
+        }).then((response) => {
+            return {response: response.json(), status: response.status}
+        })
+        .then((res) => {
+            if(res.status === 400) {
+                Alert.alert("Số điện thoại đăng ký đã tồn tại, vui lòng chọn số điện thoại khác.");    
+            } else {
+                const user = JSON.stringify(res.response.data);
+                navigation.navigate('HomeScreen');
+                Alert.alert('Đăng ký thành công');
+            }
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+    }
 
 
     return (
         <View style={styles.container}>
             <View style={styles.title}>
                 <Text style={styles.textTitle}>
-                    VUi lòng nhập số điện thoại và mật khẩu để đăng ký.
+                    Vui lòng nhập các thông tin cá nhân để đăng ký.
                 </Text>
             </View>
             <View style={styles.inputContainer}>
@@ -47,6 +101,7 @@ function SignUpScreen() {
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
                     style={styles.button}
+                    onPress={onRegister}
                 >
                     <FontAwesome5 name={'arrow-right'} size={16} color={colors.WHITE} />
                 </TouchableOpacity>
