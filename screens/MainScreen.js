@@ -7,14 +7,20 @@ import HomeScreen from './HomeScreen';
 import PhoneScreen from './PhoneScreen';
 import DiaryScreen from './DiaryScreen';
 import MyProfileScreen from './MyProfileScreen';
-
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import TestScreen from './TestScreen';
 const Tab = createBottomTabNavigator();
 
 export default function MainScreen() {
     return (
-        <Tab.Navigator initialRouteName="MessageScreen">
+        <Tab.Navigator 
+            initialRouteName="MessageScreen" 
+            screenOptions={{
+                headerShown: false,
+            }}
+        >
             <Tab.Screen name="Messages" component={MessageScreen} ></Tab.Screen>
-            <Tab.Screen name="Phone" component={HomeScreen} ></Tab.Screen>
+            <Tab.Screen name="Phone" component={PhoneScreen} ></Tab.Screen>
             <Tab.Screen name="Nhật Ký" component={DiaryScreen} ></Tab.Screen>
             <Tab.Screen name="Profile" component={MyProfileScreen} ></Tab.Screen>
         </Tab.Navigator>
