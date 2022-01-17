@@ -19,7 +19,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function MyProfileScreen({ navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
-    const [user,setUser] = useState(null);
+    const [modalVisible1, setModalVisible1] = useState(false);
+    const [user, setUser] = useState(null);
     const [posts, setPosts] = useState([]);
     const [token, setToken] = useState(null);
     useEffect(async () => {
@@ -36,8 +37,8 @@ function MyProfileScreen({ navigation }) {
         });
         const userResult = await userResponse.json();
         setUser(userResult.data)
-        console.log(user)
-        const response = await fetch(URI + 'posts/list', {
+        console.log('user', user)
+        const response = await fetch(URI + 'posts/list?userId=' + user?._id, {
             method: "GET",
             headers: {
                 Accept: "application/json",
@@ -47,7 +48,7 @@ function MyProfileScreen({ navigation }) {
             },
         });
         const res = await response.json();
-        res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        await res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         setPosts(res.data);
     }, []);
 
@@ -72,6 +73,48 @@ function MyProfileScreen({ navigation }) {
 
         return (
             <View style={styles.diaryContainer}>
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={modalVisible1}
+                    onRequestClose={() => {
+                        setModalVisible(false);
+                    }}>
+                    <View style={styles.modalContainer}>
+                        <View style={styles.modalView}>
+                        <Text style={styles.text1Modal}>Tùy chọn</Text>
+                            <TouchableOpacity
+                                style={styles.modalLine}
+                            // onPress={handleLauchCamera}
+                            >
+                                <Ionicons
+                                    name="pencil-outline"
+                                    size={28}
+                                    color={colors.BLUE_500}
+                                    style={styles.modalIcon}
+                                />
+                                <Text style={styles.text2Modal}>Chỉnh sửa bài đăng</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.modalLine}
+                            // onPress={handleLaunchImageLibrary}
+                            >
+                                <Ionicons
+                                    name="trash-outline"
+                                    size={28}
+                                    color={colors.BLUE_500}
+                                    style={styles.modalIcon}
+                                />
+                                <Text style={styles.text2Modal}>Xóa bài đăng</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.cancelModal}
+                                onPress={() => setModalVisible1(false)}>
+                                <Text style={styles.text2Modal}>HỦY</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
                 <Text style={styles.diaryTime}>{timeAgo(new Date(item.createdAt))}</Text>
                 <View style={styles.diary}>
                     <Text
@@ -98,7 +141,7 @@ function MyProfileScreen({ navigation }) {
                         <TouchableOpacity style={styles.action} onPress={handleLike}>
                             <Ionicons
                                 name={item.isLike ? 'heart' : 'heart-outline'}
-                                size={24}
+                                size={18}
                                 color={item.isLike ? colors.RED_600 : colors.GREY_600}
                             />
                             <Text style={styles.textAction}>{item.like.length}</Text>
@@ -110,10 +153,31 @@ function MyProfileScreen({ navigation }) {
                             }>
                             <Ionicons
                                 name="chatbox-ellipses-outline"
-                                size={24}
+                                size={18}
                                 color={colors.GREY_600}
                             />
                             <Text style={styles.textAction}>{item.countComments}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.action1}
+                        >
+                            <Ionicons
+                                name="earth"
+                                size={18}
+                                color={colors.GREY_600}
+                            />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.action1}
+                            onPress={() => {
+                                setModalVisible1(true);
+                            }}
+                        >
+                            <Ionicons
+                                name="ellipsis-horizontal"
+                                size={18}
+                                color={colors.GREY_600}
+                            />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -139,7 +203,7 @@ function MyProfileScreen({ navigation }) {
                         <Text style={styles.text1Modal}>Ảnh đại diện</Text>
                         <TouchableOpacity
                             style={styles.modalLine}
-                            // onPress={handleLauchCamera}
+                        // onPress={handleLauchCamera}
                         >
                             <Ionicons
                                 name="camera-outline"
@@ -151,7 +215,7 @@ function MyProfileScreen({ navigation }) {
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={styles.modalLine}
-                            // onPress={handleLaunchImageLibrary}
+                        // onPress={handleLaunchImageLibrary}
                         >
                             <Ionicons
                                 name="image-outline"
@@ -272,6 +336,7 @@ const styles = StyleSheet.create({
     text2Modal: {
         color: colors.GREY_900,
         fontSize: 18,
+        paddingHorizontal: 15,
     },
     cancelModal: {
         alignSelf: 'flex-end',
@@ -356,6 +421,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         marginRight: 25,
+    },
+    action1: {
+        alignItems: 'center',
+        flexDirection: 'row',
+        marginRight: 25,
+
     },
     textAction: {
         color: colors.GREY_900,

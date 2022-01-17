@@ -6,6 +6,8 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ScrollView,
+  RefreshControl,
 } from 'react-native';
 import timeAgo from '../utils/timeAgo';
 import * as colors from '../constants/colors';
@@ -19,25 +21,37 @@ function MessageScreen({ navigation }) {
   const [conversations, setConversations] = useState([]);
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
-
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = React.useCallback(async () => {
+    console.log('token refresh',token)
+    const response = await fetch(URI + 'chats/getListChats', {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json", 
+        authorization: "Bearer " + token,
+      },
+    });
+    const res = await response.json();
+    console.log(res)
+    setConversations(res.data);
+  }, []);
   useEffect(async () => {
     const user = await AsyncStorage.getItem('user');
     setUser(JSON.parse(user));
-
-    const token = await AsyncStorage.getItem('token');
-    setToken(token)
+    const token = await await AsyncStorage.getItem('token')
+    setToken(token);
+    console.log('token message',token)
     const response = await fetch(URI + 'chats/getListChats', {
-        method: "GET",
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            authorization: "Bearer " + token,
-        },
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        authorization: "Bearer " + token,
+      },
     });
     const res = await response.json();
     setConversations(res.data);
-    console.log(res.data)
-    console.log(conversations);
   }, []);
 
   const renderItem = ({ item }) => {
@@ -72,31 +86,41 @@ function MessageScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <MessageAppBar navigation={navigation} />
-      <View style={styles.conversationsContainer}>
-        <FlatList
-          data={conversations}
-          renderItem={renderItem}
-          ListFooterComponent={
-            <View style={styles.conversationsFooter}>
-              <Text style={styles.textConversationsFooter}>
-                Dễ dàng tìm kiếm và trò chuyện với bạn bè
-              </Text>
-              <TouchableOpacity
+      <ScrollView
+        contentContainerStyle={styles.scrollView}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+      >
+        <MessageAppBar navigation={navigation} />
+        <View style={styles.conversationsContainer}>
+          <FlatList
+            data={conversations}
+            renderItem={renderItem}
+            ListFooterComponent={
+              <View style={styles.conversationsFooter}>
+                <Text style={styles.textConversationsFooter}>
+                  Dễ dàng tìm kiếm và trò chuyện với bạn bè
+                </Text>
+                <TouchableOpacity
                 // onPress={() => navigation.navigate('SearchScreen')}
-              >
-                <LinearGradient
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  colors={[colors.LIGHT_BLUE_A700, colors.LIGHT_BLUE_A400]}
-                  style={styles.button}>
-                  <Text style={styles.textButton}>TÌM THÊM BẠN</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            </View>
-          }
-        />
-      </View>
+                >
+                  <LinearGradient
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    colors={[colors.LIGHT_BLUE_A700, colors.LIGHT_BLUE_A400]}
+                    style={styles.button}>
+                    <Text style={styles.textButton}>TÌM THÊM BẠN</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+            }
+          />
+        </View>
+      </ScrollView>
     </View>
   );
 }

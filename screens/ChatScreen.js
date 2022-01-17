@@ -12,7 +12,6 @@ function ChatScreen({ navigation, route }) {
     const [token, setToken] = useState(null);
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
-
     const flatlistRef = useRef();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
     const socket = io(URI_IO)
     const sendMessage = async () => {
@@ -107,7 +106,13 @@ function ChatScreen({ navigation, route }) {
         <View style={styles.container}>
             <ChatAppBar navigation={navigation} user={route.params.username} socket={socket} />
             <View style={styles.messagesContainer}>
-                <FlatList data={messages} renderItem={renderItem} ref={flatlistRef} />
+                <FlatList 
+                    data={messages} 
+                    renderItem={renderItem} 
+                    ref={flatlistRef}
+                    inverted 
+                    contentContainerStyle={{ flexDirection: 'column-reverse' }}
+                />
             </View>
             <View style={styles.inputContainer}>
                 <TouchableOpacity style={styles.icon}>

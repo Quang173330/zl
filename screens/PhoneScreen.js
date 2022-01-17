@@ -27,6 +27,7 @@ function PhoneScreen({ navigation }) {
     setUser(JSON.parse(user));
 
     const token = await AsyncStorage.getItem('token');
+
     setToken(token)
     console.log(token)
     const response = await fetch(URI + 'friends/list', {
@@ -39,15 +40,31 @@ function PhoneScreen({ navigation }) {
     });
     const res = await response.json();
     setListFriends(res.data.friends);
-  }, []);
+  }, []); 
 
   const renderItem = ({ item }) => {
     // const partner =
     //   user.uid === item.lastSender.id ? item.lastReceiver : item.lastSender;
-
+    const openChat = async () => {
+      const response = await fetch(URI + 'chats/getChatId', {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          authorization: "Bearer " + token,
+        },
+        body: JSON.stringify({
+          partnerId: item._id
+        })
+      });
+      const res = await response.json();
+      console.log(res)
+      const chatId = res.data._id;
+      navigation.navigate('ChatScreen', { chatId: chatId, username: item.username })
+    }
     return (
       <TouchableOpacity
-      // onPress={() => navigation.navigate('ChatScreen', { chatId: item.id, username: item.username })}
+        onPress={openChat}
       >
         <View style={styles.conversationContainer}>
           {item.avatar == null ? (
@@ -82,7 +99,7 @@ function PhoneScreen({ navigation }) {
       <PhoneAppBar navigation={navigation} />
       <View style={styles.conversationsContainer}>
         <TouchableOpacity
-        onPress={() => navigation.navigate('FriendRequestScreen')}
+          onPress={() => navigation.navigate('FriendRequestScreen')}
         >
           <View style={styles.conversationContainer}>
             <TouchableOpacity
