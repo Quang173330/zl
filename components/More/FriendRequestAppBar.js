@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import * as colors from '../../constants/colors';
 
-function MessageAppBar({navigation}) {
+function FriendRequestAppBar({navigation}) {
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -14,21 +14,18 @@ function MessageAppBar({navigation}) {
         style={styles.bar}>
         <TouchableOpacity
           style={styles.icon}
-          onPress={() => navigation.navigate('SearchScreen')}
+          onPress={() => navigation.goBack()}
         >
-          <Ionicons name="search-outline" size={24} color={colors.WHITE} />
+          <Ionicons name="chevron-back-outline" size={24} color={colors.WHITE} />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.textContainer}
-          onPress={() => navigation.navigate('SearchScreen')}
+        //   onPress={() => navigation.navigate('SearchScreen')}
         >
-          <Text style={styles.text}>Tìm bạn bè,...</Text>
+          <Text style={styles.text}>Lời mời kết bạn</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.icon}>
-          <Ionicons name="qr-code-outline" size={24} color={colors.WHITE} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.icon}>
-          <Ionicons name="add-outline" size={24} color={colors.WHITE} />
+          <Ionicons name="settings-outline" size={24} color={colors.WHITE} />
         </TouchableOpacity>
       </LinearGradient>
     </View>
@@ -56,4 +53,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MessageAppBar;
+export default FriendRequestAppBar;

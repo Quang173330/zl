@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     FlatList,
     Image,
@@ -7,53 +7,83 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
 import * as colors from '../constants/colors';
-import SearchAppBar from './SearchAppBar';
+import SearchAppBar from '../components/More/SearchAppBar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { URI } from '../constants/config';
 
 function SearchScreen({ navigation }) {
+    const [users, setUsers] = useState([]);
+
+
+    const handleSearch = async text => {
+        const token = await AsyncStorage.getItem('token');
+        const response = await fetch(URI + 'users/search', {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                authorization: "Bearer " + token,
+            },
+            body: JSON.stringify({
+                keyword: text
+            })
+        });
+        const res = await response.json()
+        console.log(res)
+        setUsers(res.data)
+        console.log(res.data)
+    };
 
     const handleBack = () => {
         // dispatch(searchRequest({keyword: ''}));
         navigation.goBack();
     };
 
-    //   const renderItem = ({item}) => (
-    //     <View style={styles.userCard}>
-    //       {item.avatar ? (
-    //         <TouchableOpacity
-    //           onPress={() =>
-    //             navigation.navigate('OtherProfileScreen', {other: item})
-    //           }>
-    //           <Image source={{uri: item.avatar}} style={styles.imageAvatar} />
-    //         </TouchableOpacity>
-    //       ) : (
-    //         <TouchableOpacity
-    //           onPress={() =>
-    //             navigation.navigate('OtherProfileScreen', {other: item})
-    //           }>
-    //           <View style={styles.textAvatar}>
-    //             <Text style={styles.text1}>{item.name[0]}</Text>
-    //           </View>
-    //         </TouchableOpacity>
-    //       )}
-    //       <Text style={styles.text2}>{item.name}</Text>
-    //       <TouchableOpacity
-    //         style={styles.icon}
-    //         onPress={() => navigation.navigate('ChatScreen', {user: item})}>
-    //         <Ionicons
-    //           name="chatbubbles-outline"
-    //           size={24}
-    //           color={colors.BLUE_GREY_400}
-    //         />
-    //       </TouchableOpacity>
-    //     </View>
-    //   );
+    const renderItem = ({ item }) => (
+        <View style={styles.userCard}>
+            {item.avatar ? (
+                <TouchableOpacity
+                    // onPress={() =>
+                    //     navigation.navigate('OtherProfileScreen', { other: item })
+                    // }
+                    >
+                    <Image source={{ uri: item.avatar }} style={styles.imageAvatar} />
+                </TouchableOpacity>
+            ) : (
+                <TouchableOpacity
+                    // onPress={() =>
+                    //     navigation.navigate('OtherProfileScreen', { other: item })
+                    // }
+                >
+                    <View style={styles.textAvatar}>
+                        <Text style={styles.text1}>{item.username}</Text>
+                    </View>
+                </TouchableOpacity>
+            )}
+            <Text style={styles.text2}>{item.username}</Text>
+            <TouchableOpacity
+                style={styles.icon}
+                // onPress={() => navigation.navigate('ChatScreen', { user: item })}
+            >
+                <Ionicons
+                    name="chatbubbles-outline"
+                    size={24}
+                    color={colors.BLUE_GREY_400}
+                />
+            </TouchableOpacity>
+        </View>
+    );
 
     return (
         <View style={styles.container}>
-
-            <SearchAppBar onBack={handleBack} />
+            <SearchAppBar onSearch={handleSearch} onBack={handleBack} />
+                <FlatList
+                    data={users}
+                    renderItem={renderItem}
+                    keyExtractor={item => item._id}
+                />
         </View>
     );
 }

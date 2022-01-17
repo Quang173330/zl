@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import * as colors from '../../constants/colors';
 
-function MessageAppBar({navigation}) {
+function PhoneAppBar({navigation}) {
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -25,10 +25,7 @@ function MessageAppBar({navigation}) {
           <Text style={styles.text}>Tìm bạn bè,...</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.icon}>
-          <Ionicons name="qr-code-outline" size={24} color={colors.WHITE} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.icon}>
-          <Ionicons name="add-outline" size={24} color={colors.WHITE} />
+          <Ionicons name="person-add-outline" size={24} color={colors.WHITE} />
         </TouchableOpacity>
       </LinearGradient>
     </View>
@@ -56,4 +53,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MessageAppBar;
+export default PhoneAppBar;

@@ -1,8 +1,8 @@
 import React, {useRef, useState} from 'react';
 import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import * as colors from '../constants/colors';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+import * as colors from '../../constants/colors';
 
 function SearchAppBar({onSearch, onBack}) {
   const [keyword, setKeyword] = useState('');

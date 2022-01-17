@@ -14,8 +14,9 @@ import MessageAppBar from '../components/Message/MessageAppBar';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { URI } from '../constants/config';
+import PhoneAppBar from '../components/More/PhoneAppBar';
 
-function MessageScreen({ navigation }) {
+function PhoneScreen({ navigation }) {
 
   const [listFriends, setListFriends] = useState([]);
   const [user, setUser] = useState(null);
@@ -29,12 +30,12 @@ function MessageScreen({ navigation }) {
     setToken(token)
     console.log(token)
     const response = await fetch(URI + 'friends/list', {
-        method: "POST",
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            authorization: "Bearer " + token,
-        },
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        authorization: "Bearer " + token,
+      },
     });
     const res = await response.json();
     setListFriends(res.data.friends);
@@ -46,7 +47,7 @@ function MessageScreen({ navigation }) {
 
     return (
       <TouchableOpacity
-        // onPress={() => navigation.navigate('ChatScreen', { chatId: item.id, username: item.username })}
+      // onPress={() => navigation.navigate('ChatScreen', { chatId: item.id, username: item.username })}
       >
         <View style={styles.conversationContainer}>
           {item.avatar == null ? (
@@ -78,9 +79,39 @@ function MessageScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <MessageAppBar navigation={navigation} />
+      <PhoneAppBar navigation={navigation} />
       <View style={styles.conversationsContainer}>
-        
+        <TouchableOpacity
+        onPress={() => navigation.navigate('FriendRequestScreen')}
+        >
+          <View style={styles.conversationContainer}>
+            <TouchableOpacity
+              style={styles.button1}
+            >
+              <Ionicons name="people-circle" size={55} color={colors.BLUE_500} />
+            </TouchableOpacity>
+            <View style={styles.divide}>
+              <View style={styles.messageContainer}>
+                <Text style={styles.text2}>Lời mời kết bạn</Text>
+              </View>
+            </View>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+        >
+          <View style={styles.conversationContainer}>
+            <TouchableOpacity
+              style={styles.button1}
+            >
+              <Ionicons name="call" size={50} color={colors.GREEN} />
+            </TouchableOpacity>
+            <View style={styles.divide}>
+              <View style={styles.messageContainer}>
+                <Text style={styles.text2}>Bạn từ danh bạ máy</Text>
+              </View>
+            </View>
+          </View>
+        </TouchableOpacity>
         <FlatList
           data={listFriends}
           renderItem={renderItem}
@@ -90,7 +121,7 @@ function MessageScreen({ navigation }) {
                 Dễ dàng tìm kiếm và trò chuyện với bạn bè
               </Text>
               <TouchableOpacity
-                // onPress={() => navigation.navigate('SearchScreen')}
+              // onPress={() => navigation.navigate('SearchScreen')}
               >
                 <LinearGradient
                   start={{ x: 0, y: 0 }}
@@ -140,10 +171,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   messageContainer: {
+    justifyContent: 'center',
     flex: 1,
   },
   text2: {
-    marginTop:5,
+    marginTop: 5,
     color: colors.GREY_900,
     fontSize: 16,
   },
@@ -157,11 +189,10 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   divide: {
-    borderBottomColor: colors.GREY_300,
-    borderBottomWidth: 0.75,
     flex: 1,
     flexDirection: 'row',
     paddingVertical: 15,
+    paddingHorizontal: 5,
   },
   conversationsFooter: {
     alignItems: 'center',
@@ -177,6 +208,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   button1: {
+    justifyContent: 'center',
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 5,
@@ -187,4 +219,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MessageScreen;
+export default PhoneScreen;

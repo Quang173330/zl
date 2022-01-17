@@ -14,6 +14,8 @@ import CommentScreen from "./screens/CommentScreen.js";
 import ChatScreen from "./screens/ChatScreen.js";
 import MyProfileScreen from "./screens/MyProfileScreen.js";
 import TestScreen from "./screens/TestScreen.js";
+import FriendRequestScreen from "./screens/FriendRequestScreen.js";
+import SearchScreen from "./screens/SearchScreen.js";
 
 const Stack = createNativeStackNavigator();
 
@@ -37,7 +39,8 @@ function App() {
         <Stack.Screen name="CommentScreen" component={CommentScreen} />
         <Stack.Screen name="ChatScreen" component={ChatScreen} />
         <Stack.Screen name="MyProfileScreen" component={MyProfileScreen} />
-        <Stack.Screen name="TestScreen" component={TestScreen} />
+        <Stack.Screen name="FriendRequestScreen" component={FriendRequestScreen} />
+        <Stack.Screen name="SearchScreen" component={SearchScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
