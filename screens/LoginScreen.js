@@ -16,23 +16,57 @@ function LogInScreen({ navigation }) {
     const [phonenumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
     const onLogin = async () => {
-        if(phonenumber === '') {
-            Alert.alert("Vui lòng nhập số điện thoại");
-            return;
+        try {
+            console.log(await AsyncStorage.getItem('user'))
+            console.log('aa')
+            if (phonenumber === '') {
+                Alert.alert("Vui lòng nhập số điện thoại");
+                return;
+            }
+            if (password === '') {
+                Alert.alert("Vui lòng nhập mật khẩu");
+                return;
+            }
+            if (!phonenumber.match(/^\d{10}$/)) {
+                Alert.alert("Vui lòng nhập số điện thoại đúng định dạng.");
+                return;
+            }
+            if (!password.match(/^[0-9a-zA-Z]{6,}$/)) {
+                Alert.alert("Vui lòng nhập mật khẩu đúng định dạng.");
+                return;
+            }
+            const response = await fetch(URI + 'users/login', {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    phonenumber: phonenumber,
+                    password: password,
+                }),
+            });
+            const res = await response.json()
+            const status = await response.status
+            console.log('status', status)
+            if (status === 400) {
+                Alert.alert("Tài khoản hoặc mật khẩu không đúng.");
+            } else {
+                const user = JSON.stringify(res.data)
+                AsyncStorage.setItem('user', user);
+                AsyncStorage.setItem('token', res.token);
+
+                console.log('token',await AsyncStorage.getItem('token'))
+                console.log('user',await AsyncStorage.getItem('user'))
+                navigation.navigate('MainScreen');
+                Alert.alert('Đăng nhập thành công');
+            }
+        } catch (error) {
+            console.log(error)
+            Alert.alert('Lỗi không xác định');
         }
-        if(password === '') {
-            Alert.alert("Vui lòng nhập mật khẩu");
-            return;
-        }
-        if(!phonenumber.match(/^\d{10}$/)) {
-            Alert.alert("Vui lòng nhập số điện thoại đúng định dạng.");
-            return;
-        }
-        if(!password.match(/^[0-9a-zA-Z]{6,}$/)) {
-            Alert.alert("Vui lòng nhập mật khẩu đúng định dạng.");
-            return;
-        }
-        // const response = await fetch(URI+ 'users/login', {
+
+        // fetch(URI+ 'users/login', {
         //     method: "POST",
         //     headers: {
         //         Accept: "application/json",
@@ -42,44 +76,27 @@ function LogInScreen({ navigation }) {
         //         phonenumber: phonenumber,
         //         password: password,
         //     }),
+        // }).then((response) => {
+        //     return {response: response.json(), status: response.status}
+        // })
+        // .then((res) => {
+        //     console.log(res)
+        //     if(res.status === 400) {
+        //         Alert.alert("Tài khoản hoặc mật khẩu không đúng.");    
+        //     } else {
+        //         const user = JSON.stringify(res.response.data);
+        //         AsyncStorage.setItem('user', user);
+        //         AsyncStorage.setItem('token', res.token);
+        //         console.log('toke login',res.token)
+        //         console.log('user',res.response.data)
+        //         navigation.navigate('MainScreen');
+        //         Alert.alert('Đăng nhập thành công');
+        //     }
+        // })
+        // .catch((error) => {
+        //     console.error(error);
         // });
-        // const res = await response.json()
-        // const user = JSON.stringify(res.data)
-        // AsyncStorage.setItem('user', user);
-        // const a = await AsyncStorage.getItem('user')
-        // console.log(typeof a)
-        // AsyncStorage.setItem('token', res.token);
-        // navigation.navigate('MainScreen');
-        // Alert.alert('Đăng nhập thành công');
-        fetch(URI+ 'users/login', {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                phonenumber: phonenumber,
-                password: password,
-            }),
-        }).then((response) => {
-            return {response: response.json(), status: response.status}
-        })
-        .then((res) => {
-            if(res.status === 400) {
-                Alert.alert("Tài khoản hoặc mật khẩu không đúng.");    
-            } else {
-                const user = JSON.stringify(res.response.data);
-                AsyncStorage.setItem('user', user);
-                AsyncStorage.getItem('user');
-                AsyncStorage.setItem('token', res.token);
-                navigation.navigate('MainScreen');
-                Alert.alert('Đăng nhập thành công');
-            }
-        })
-        .catch((error) => {
-            console.error(error);
-        });
-        
+
     }
 
     return (

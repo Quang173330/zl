@@ -9,6 +9,8 @@ import DiaryScreen from './DiaryScreen';
 import MyProfileScreen from './MyProfileScreen';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import TestScreen from './TestScreen';
+import ProfileScreen from './ProfileScreen';
+
 const Tab = createBottomTabNavigator();
 
 export default function MainScreen() {
@@ -22,7 +24,7 @@ export default function MainScreen() {
             <Tab.Screen name="Messages" component={MessageScreen} ></Tab.Screen>
             <Tab.Screen name="Phone" component={PhoneScreen} ></Tab.Screen>
             <Tab.Screen name="Nhật Ký" component={DiaryScreen} ></Tab.Screen>
-            <Tab.Screen name="Profile" component={MyProfileScreen} ></Tab.Screen>
+            <Tab.Screen name="Profile" component={ProfileScreen} ></Tab.Screen>
         </Tab.Navigator>
     );
 }

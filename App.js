@@ -16,6 +16,8 @@ import MyProfileScreen from "./screens/MyProfileScreen.js";
 import TestScreen from "./screens/TestScreen.js";
 import FriendRequestScreen from "./screens/FriendRequestScreen.js";
 import SearchScreen from "./screens/SearchScreen.js";
+import OtherProfileScreen from "./screens/OtherProfileScreen.js";
+import ProfileScreen from "./screens/ProfileScreen.js";
 
 const Stack = createNativeStackNavigator();
 
@@ -41,6 +43,8 @@ function App() {
         <Stack.Screen name="MyProfileScreen" component={MyProfileScreen} />
         <Stack.Screen name="FriendRequestScreen" component={FriendRequestScreen} />
         <Stack.Screen name="SearchScreen" component={SearchScreen} />
+        <Stack.Screen name="OtherProfileScreen" component={OtherProfileScreen} />
+        <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

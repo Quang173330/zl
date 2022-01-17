@@ -37,7 +37,6 @@ function DiaryScreen({ navigation }) {
                 Accept: "application/json",
                 "Content-Type": "application/json",
                 authorization: "Bearer " + token,
-
             },
         });
         const res = await response.json();
@@ -50,6 +49,7 @@ function DiaryScreen({ navigation }) {
     useEffect(async () => {
         const user = await AsyncStorage.getItem('user');
         setUser(JSON.parse(user));
+        console.log(user)
 
         const token = await AsyncStorage.getItem('token');
         setToken(token)
@@ -59,7 +59,6 @@ function DiaryScreen({ navigation }) {
                 Accept: "application/json",
                 "Content-Type": "application/json",
                 authorization: "Bearer " + token,
-
             },
         });
         const res = await response.json();
@@ -100,7 +99,6 @@ function DiaryScreen({ navigation }) {
             <View style={styles.diaryContainer}>
                 <View style={styles.diaryInfo}>
                     {/* {item.author.avatar == null ? (
-                        <Text>Hello</Text>
                         <TouchableOpacity
                             onPress={() => {
                                 if (item.user.id === user.uid) {
@@ -116,13 +114,13 @@ function DiaryScreen({ navigation }) {
                         </TouchableOpacity>
                     ) : ( */}
                     <TouchableOpacity
-                    // onPress={() => {
-                    //     if (item.author.id === user.uid) {
-                    //         navigation.navigate('MyProfileScreen');
-                    //     } else {
-                    //         navigation.navigate('OtherProfileScreen', { other: item.user });
-                    //     }
-                    // }}
+                    onPress={() => {
+                        if (item.author._id == user.id) {
+                            navigation.navigate('MyProfileScreen');
+                        } else {
+                            navigation.navigate('OtherProfileScreen', { other: item.author });
+                        }
+                    }}
                     >
                         <View style={styles.diaryTextAvatar}>
                             <Text style={styles.text1}>{item.author.username}</Text>

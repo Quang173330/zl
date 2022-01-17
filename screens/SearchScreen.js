@@ -41,49 +41,70 @@ function SearchScreen({ navigation }) {
         navigation.goBack();
     };
 
-    const renderItem = ({ item }) => (
-        <View style={styles.userCard}>
-            {item.avatar ? (
-                <TouchableOpacity
-                    // onPress={() =>
-                    //     navigation.navigate('OtherProfileScreen', { other: item })
-                    // }
+    const renderItem = ({ item }) => {
+        const openChat = async () => {
+            const token = await AsyncStorage.getItem('token');
+            const response = await fetch(URI + 'chats/getChatId', {
+                method: "POST",
+                headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json",
+                  authorization: "Bearer " + token,
+                },
+                body: JSON.stringify({
+                  partnerId: item._id
+                })
+              });
+              const res = await response.json();
+              console.log(res)
+              const chatId = res.data._id;
+            navigation.navigate('ChatScreen', { chatId: chatId, username: item.username })
+        }
+
+        return (
+            <View style={styles.userCard}>
+                {item.avatar ? (
+                    <TouchableOpacity
+                        onPress={() =>
+                            navigation.navigate('OtherProfileScreen', { other: item })
+                        }
                     >
-                    <Image source={{ uri: item.avatar }} style={styles.imageAvatar} />
-                </TouchableOpacity>
-            ) : (
+                        <Image source={{ uri: item.avatar }} style={styles.imageAvatar} />
+                    </TouchableOpacity>
+                ) : (
+                    <TouchableOpacity
+                        onPress={() =>
+                            navigation.navigate('OtherProfileScreen', { other: item })
+                        }
+                    >
+                        <View style={styles.textAvatar}>
+                            <Text style={styles.text1}>{item.username}</Text>
+                        </View>
+                    </TouchableOpacity>
+                )}
+                <Text style={styles.text2}>{item.username}</Text>
                 <TouchableOpacity
-                    // onPress={() =>
-                    //     navigation.navigate('OtherProfileScreen', { other: item })
-                    // }
+                    style={styles.icon}
+                    onPress={openChat}
                 >
-                    <View style={styles.textAvatar}>
-                        <Text style={styles.text1}>{item.username}</Text>
-                    </View>
+                    <Ionicons
+                        name="chatbubbles-outline"
+                        size={24}
+                        color={colors.BLUE_GREY_400}
+                    />
                 </TouchableOpacity>
-            )}
-            <Text style={styles.text2}>{item.username}</Text>
-            <TouchableOpacity
-                style={styles.icon}
-                // onPress={() => navigation.navigate('ChatScreen', { user: item })}
-            >
-                <Ionicons
-                    name="chatbubbles-outline"
-                    size={24}
-                    color={colors.BLUE_GREY_400}
-                />
-            </TouchableOpacity>
-        </View>
-    );
+            </View>
+        )
+    };
 
     return (
         <View style={styles.container}>
             <SearchAppBar onSearch={handleSearch} onBack={handleBack} />
-                <FlatList
-                    data={users}
-                    renderItem={renderItem}
-                    keyExtractor={item => item._id}
-                />
+            <FlatList
+                data={users}
+                renderItem={renderItem}
+                keyExtractor={item => item._id}
+            />
         </View>
     );
 }
