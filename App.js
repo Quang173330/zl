@@ -1,5 +1,6 @@
 "use strict";
 import React from "react";
+import { StyleSheet, Text, SafeAreaView } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginScreen from "./screens/LoginScreen.js";
@@ -22,31 +23,38 @@ import ProfileScreen from "./screens/ProfileScreen.js";
 const Stack = createNativeStackNavigator();
 
 function App() {
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+    }
+  });
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}
-        initialRouteName="HomeScreen"
-      >
-        <Stack.Screen name="HomeScreen" component={HomeScreen} />
-        <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
-        <Stack.Screen name="LoginScreen" component={LoginScreen} />
-        <Stack.Screen name="MainScreen" component={MainScreen} />
-        <Stack.Screen name="MessageScreen" component={MessageScreen} />
-        <Stack.Screen name="PhoneScreen" component={PhoneScreen} />
-        <Stack.Screen name="PostDiaryScreen" component={PostDiaryScreen} />
-        <Stack.Screen name="DiaryScreen" component={DiaryScreen} />
-        <Stack.Screen name="CommentScreen" component={CommentScreen} />
-        <Stack.Screen name="ChatScreen" component={ChatScreen} />
-        <Stack.Screen name="MyProfileScreen" component={MyProfileScreen} />
-        <Stack.Screen name="FriendRequestScreen" component={FriendRequestScreen} />
-        <Stack.Screen name="SearchScreen" component={SearchScreen} />
-        <Stack.Screen name="OtherProfileScreen" component={OtherProfileScreen} />
-        <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <SafeAreaView style={styles.container}>
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+          initialRouteName="HomeScreen"
+        >
+          <Stack.Screen name="HomeScreen" component={HomeScreen} />
+          <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
+          <Stack.Screen name="LoginScreen" component={LoginScreen} />
+          <Stack.Screen name="MainScreen" component={MainScreen} />
+          <Stack.Screen name="MessageScreen" component={MessageScreen} />
+          <Stack.Screen name="PhoneScreen" component={PhoneScreen} />
+          <Stack.Screen name="PostDiaryScreen" component={PostDiaryScreen} />
+          <Stack.Screen name="DiaryScreen" component={DiaryScreen} />
+          <Stack.Screen name="CommentScreen" component={CommentScreen} />
+          <Stack.Screen name="ChatScreen" component={ChatScreen} />
+          <Stack.Screen name="MyProfileScreen" component={MyProfileScreen} />
+          <Stack.Screen name="FriendRequestScreen" component={FriendRequestScreen} />
+          <Stack.Screen name="SearchScreen" component={SearchScreen} />
+          <Stack.Screen name="OtherProfileScreen" component={OtherProfileScreen} />
+          <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaView>
   );
 }
 
