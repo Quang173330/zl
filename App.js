@@ -19,6 +19,7 @@ import FriendRequestScreen from "./screens/FriendRequestScreen.js";
 import SearchScreen from "./screens/SearchScreen.js";
 import OtherProfileScreen from "./screens/OtherProfileScreen.js";
 import ProfileScreen from "./screens/ProfileScreen.js";
+import EditPostScreen from "./screens/EditPostScreen.js";
 
 const Stack = createNativeStackNavigator();
 
@@ -52,6 +53,7 @@ function App() {
           <Stack.Screen name="SearchScreen" component={SearchScreen} />
           <Stack.Screen name="OtherProfileScreen" component={OtherProfileScreen} />
           <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+          <Stack.Screen name="EditPostScreen" component={EditPostScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaView>

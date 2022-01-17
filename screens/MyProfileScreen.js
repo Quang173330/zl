@@ -8,6 +8,7 @@ import {
     Text,
     TouchableOpacity,
     View,
+    Alert, 
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { windowHeight, windowWidth } from '../constants/dimensions';
@@ -16,6 +17,8 @@ import * as colors from '../constants/colors';
 import MyProfileAppBar from '../components/More/MyProfileAppBar';
 import { URI } from '../constants/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Entypo } from '@expo/vector-icons'; 
+import OptionsMenu from "../utils/OptionsMenu.js";
 
 function MyProfileScreen({ navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
@@ -67,60 +70,55 @@ function MyProfileScreen({ navigation }) {
             const res = await response.json();
             item.isLike = !item.isLike
             item.like = res.data.like
-            setPosts(posts)
+            setPosts(posts);
             setRefresh(!refresh)
         };
 
+        const postOptionIcon = (<Entypo name="dots-three-vertical" size={18} color="black" />)
+
+        const editPost = () => {
+            navigation.navigate('EditPostScreen', { postId: item._id });
+        }
+
+        const deletePost = () => {
+            Alert.alert(null, 'Xoá bài viết này?', [
+                {
+                  text: 'Huỷ',
+                  onPress: () => { },
+                  style: 'cancel',
+                },
+                { text: 'Xoá', onPress: () => {
+                    fetch(URI + 'posts/delete/' + item._id, {
+                        method: "GET",
+                        headers: {
+                            Accept: "application/json",
+                            "Content-Type": "application/json",
+                            authorization: "Bearer " + token,
+            
+                        },
+                    });
+                    setPosts(posts.filter(obj => obj._id !== item._id))
+                    Alert.alert("Đã xoá bài viết");
+                } },
+              ]);;
+        }
+
         return (
             <View style={styles.diaryContainer}>
-                <Modal
-                    animationType="fade"
-                    transparent={true}
-                    visible={modalVisible1}
-                    onRequestClose={() => {
-                        setModalVisible(false);
-                    }}>
-                    <View style={styles.modalContainer}>
-                        <View style={styles.modalView}>
-                        <Text style={styles.text1Modal}>Tùy chọn</Text>
-                            <TouchableOpacity
-                                style={styles.modalLine}
-                            // onPress={handleLauchCamera}
-                            >
-                                <Ionicons
-                                    name="pencil-outline"
-                                    size={28}
-                                    color={colors.BLUE_500}
-                                    style={styles.modalIcon}
-                                />
-                                <Text style={styles.text2Modal}>Chỉnh sửa bài đăng</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={styles.modalLine}
-                            // onPress={handleLaunchImageLibrary}
-                            >
-                                <Ionicons
-                                    name="trash-outline"
-                                    size={28}
-                                    color={colors.BLUE_500}
-                                    style={styles.modalIcon}
-                                />
-                                <Text style={styles.text2Modal}>Xóa bài đăng</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={styles.cancelModal}
-                                onPress={() => setModalVisible1(false)}>
-                                <Text style={styles.text2Modal}>HỦY</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </Modal>
                 <Text style={styles.diaryTime}>{timeAgo(new Date(item.createdAt))}</Text>
                 <View style={styles.diary}>
                     <Text
                         style={{ fontFamily: item.font, color: item.color, fontSize: 24 }}>
                         {item.described}
                     </Text>
+
+                    <TouchableOpacity style={{ position: 'absolute', right: 20, top: 20}}>
+                        <OptionsMenu
+                            customButton={postOptionIcon}
+                            destructiveIndex={1}
+                            options={["Edit", "Delete", "Cancel"]}
+                            actions={[editPost,deletePost, item._id]}/>
+                    </TouchableOpacity>
                     {/* {item.image !== null && (
                         <AutoHeightImage
                             width={windowWidth - 70}
@@ -163,18 +161,6 @@ function MyProfileScreen({ navigation }) {
                         >
                             <Ionicons
                                 name="earth"
-                                size={18}
-                                color={colors.GREY_600}
-                            />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={styles.action1}
-                            onPress={() => {
-                                setModalVisible1(true);
-                            }}
-                        >
-                            <Ionicons
-                                name="ellipsis-horizontal"
                                 size={18}
                                 color={colors.GREY_600}
                             />
