@@ -9,12 +9,15 @@ import {
     View,
     RefreshControl,
     ScrollView,
+    Alert,
 } from 'react-native';
 import DiaryAppBar from '../components/Diary/DiaryAppBar';
 import * as colors from '../constants/colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { URI } from '../constants/config';
 import { Ionicons } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons'; 
+import OptionsMenu from "react-native-option-menu";
 
 function DiaryScreen({ navigation }) {
 
@@ -83,6 +86,16 @@ function DiaryScreen({ navigation }) {
             setRefresh(!refresh)
         };
 
+        const postOptionIcon = (<Entypo name="dots-three-vertical" size={18} color="black" />)
+
+        const editPost = () => {
+            Alert.alert("edit");
+        }
+
+        const deletePost = () => {
+            Alert.alert("delete");
+        }
+
         return (
             <View style={styles.diaryContainer}>
                 <View style={styles.diaryInfo}>
@@ -120,6 +133,15 @@ function DiaryScreen({ navigation }) {
                         <Text style={styles.text2}>{item.author.username}</Text>
                         {/* <Text style={styles.text3}>{timeAgo(item.createdAt)}</Text> */}
                     </View>
+                    <TouchableOpacity style={{marginLeft: 240}}>
+                        <OptionsMenu
+                            customButton={postOptionIcon}
+                            buttonStyle={{ width: 32, height: 8, margin: 7.5, resizeMode: "contain" }}
+                            destructiveIndex={1}
+                            options={["Edit", "Delete", "Cancel"]}
+                            actions={[editPost,deletePost]}/>
+                    </TouchableOpacity>
+                    
                 </View>
                 <Text
                     style={{
