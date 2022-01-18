@@ -47,23 +47,30 @@ function SearchScreen({ navigation }) {
             const response = await fetch(URI + 'chats/getChatId', {
                 method: "POST",
                 headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                  authorization: "Bearer " + token,
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    authorization: "Bearer " + token,
                 },
                 body: JSON.stringify({
-                  partnerId: item._id
+                    partnerId: item._id
                 })
-              });
-              const res = await response.json();
-              console.log(res)
-              const chatId = res.data._id;
+            });
+            const res = await response.json();
+            console.log(res)
+            const chatId = res.data._id;
             navigation.navigate('ChatScreen', { chatId: chatId, username: item.username })
         }
 
         return (
             <View style={styles.userCard}>
-                {item.avatar ? (
+                <TouchableOpacity
+                    onPress={() =>
+                        navigation.navigate('OtherProfileScreen', { other: item })
+                    }
+                >
+                    <Image source={{ uri: 'https://picsum.photos/200' }} style={styles.imageAvatar} />
+                </TouchableOpacity>
+                {/* {item.avatar ? (
                     <TouchableOpacity
                         onPress={() =>
                             navigation.navigate('OtherProfileScreen', { other: item })
@@ -81,7 +88,7 @@ function SearchScreen({ navigation }) {
                             <Text style={styles.text1}>{item.username}</Text>
                         </View>
                     </TouchableOpacity>
-                )}
+                )} */}
                 <Text style={styles.text2}>{item.username}</Text>
                 <TouchableOpacity
                     style={styles.icon}

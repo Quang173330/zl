@@ -8,7 +8,7 @@ import {
     Text,
     TouchableOpacity,
     View,
-    Alert, 
+    Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { windowHeight, windowWidth } from '../constants/dimensions';
@@ -17,7 +17,7 @@ import * as colors from '../constants/colors';
 import MyProfileAppBar from '../components/More/MyProfileAppBar';
 import { URI, URI_IO } from '../constants/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Entypo } from '@expo/vector-icons'; 
+import { Entypo } from '@expo/vector-icons';
 import OptionsMenu from "../utils/OptionsMenu.js";
 import AutoHeightImage from 'react-native-auto-height-image';
 
@@ -85,24 +85,26 @@ function MyProfileScreen({ navigation }) {
         const deletePost = () => {
             Alert.alert(null, 'Xoá bài viết này?', [
                 {
-                  text: 'Huỷ',
-                  onPress: () => { },
-                  style: 'cancel',
+                    text: 'Huỷ',
+                    onPress: () => { },
+                    style: 'cancel',
                 },
-                { text: 'Xoá', onPress: () => {
-                    fetch(URI + 'posts/delete/' + item._id, {
-                        method: "GET",
-                        headers: {
-                            Accept: "application/json",
-                            "Content-Type": "application/json",
-                            authorization: "Bearer " + token,
-            
-                        },
-                    });
-                    setPosts(posts.filter(obj => obj._id !== item._id))
-                    Alert.alert("Đã xoá bài viết");
-                } },
-              ]);;
+                {
+                    text: 'Xoá', onPress: () => {
+                        fetch(URI + 'posts/delete/' + item._id, {
+                            method: "GET",
+                            headers: {
+                                Accept: "application/json",
+                                "Content-Type": "application/json",
+                                authorization: "Bearer " + token,
+
+                            },
+                        });
+                        setPosts(posts.filter(obj => obj._id !== item._id))
+                        Alert.alert("Đã xoá bài viết");
+                    }
+                },
+            ]);;
         }
         const renderImages = () => {
             if (item.images.length) {
@@ -135,12 +137,12 @@ function MyProfileScreen({ navigation }) {
                         {item.described}
                     </Text>
 
-                    <TouchableOpacity style={{ position: 'absolute', right: 20, top: 20}}>
+                    <TouchableOpacity style={{ position: 'absolute', right: 20, top: 20 }}>
                         <OptionsMenu
                             customButton={postOptionIcon}
                             destructiveIndex={1}
                             options={["Edit", "Delete", "Cancel"]}
-                            actions={[editPost,deletePost, item._id]}/>
+                            actions={[editPost, deletePost, item._id]} />
                     </TouchableOpacity>
                     {renderImages()}
                     <View style={styles.actionsContainer}>
@@ -228,7 +230,6 @@ function MyProfileScreen({ navigation }) {
                 </View>
             </Modal>
             <MyProfileAppBar navigation={navigation} user={user} />
-
             <FlatList
                 ListEmptyComponent={
                     <>
@@ -264,7 +265,9 @@ function MyProfileScreen({ navigation }) {
                                         setModalVisible(true);
                                     }}>
                                     <Image
-                                        source={{ uri: user?.photoURL }}
+                                        source={{
+                                            uri: 'https://picsum.photos/1000',
+                                        }}
                                         style={styles.imageAvatar}
                                     />
                                 </TouchableOpacity>
@@ -273,9 +276,12 @@ function MyProfileScreen({ navigation }) {
                                     onPress={() => {
                                         setModalVisible(true);
                                     }}>
-                                    <View style={styles.textAvatar}>
-                                        <Text style={styles.text1}>{user?.username}</Text>
-                                    </View>
+                                    <Image
+                                        source={{
+                                            uri: 'https://picsum.photos/1000',
+                                        }}
+                                        style={styles.imageAvatar}
+                                    />
                                 </TouchableOpacity>
                             )}
                             <Text style={styles.text2}>{user?.username}</Text>
@@ -295,7 +301,7 @@ function MyProfileScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-    imageContainer1:{
+    imageContainer1: {
         marginTop: 15,
     },
     imageContainer: {

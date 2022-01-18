@@ -148,9 +148,10 @@ function DiaryScreen({ navigation }) {
                             }
                         }}
                     >
-                        <View style={styles.diaryTextAvatar}>
-                            <Text style={styles.text1}>{item.author.username}</Text>
-                        </View>
+                        <Image
+                            source={{ uri: 'https://picsum.photos/200' }}
+                            style={styles.diaryImageAvatar}
+                        />
                     </TouchableOpacity>
 
                     <View>
@@ -234,9 +235,10 @@ function DiaryScreen({ navigation }) {
                 <FlatList
                     ListHeaderComponent={
                         <View style={styles.headerContainer}>
-                            <View style={styles.diaryTextAvatar}>
-                                <Text style={styles.text1}>Le Xuan Quang</Text>
-                            </View>
+                            <Image
+                                source={{ uri: 'https://picsum.photos/200' }}
+                                style={styles.diaryImageAvatar}
+                            />
                             <TouchableOpacity
                                 onPress={() => navigation.navigate('PostDiaryScreen')}
                             >

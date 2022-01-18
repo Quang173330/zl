@@ -9,13 +9,12 @@ function MyProfileAppBar({ navigation, user }) {
             <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
                 <Ionicons name="arrow-back-outline" size={24} color={colors.GREY_800} />
             </TouchableOpacity>
-            {user?.photoURL != null ? (
-                <Image source={{ uri: user?.photoURL }} style={styles.imageAvatar} />
-            ) : (
-                <View style={styles.textAvatar}>
-                    <Text style={styles.text1}>{user?.username}</Text>
-                </View>
-            )}
+            <Image
+                source={{
+                    uri: 'https://picsum.photos/1000',
+                }}
+                style={styles.imageAvatar}
+            />
             <Text style={styles.text2}>{user?.username}</Text>
         </View>
     );

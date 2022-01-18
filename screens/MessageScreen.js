@@ -63,13 +63,15 @@ function MessageScreen({ navigation }) {
         onPress={() => navigation.navigate('ChatScreen', { chatId: item.id, username: item.username })}
       >
         <View style={styles.conversationContainer}>
-          {item.avatar == null ? (
+        <Image source={{ uri: 'https://picsum.photos/1000' }} style={styles.imageAvatar} />
+
+          {/* {item.avatar == null ? (
             <Image source={{ uri: item.avatar }} style={styles.imageAvatar} />
           ) : (
             <View style={styles.textAvatar}>
               <Text style={styles.text1}>{item.username}</Text>
             </View>
-          )}
+          )} */}
           <View style={styles.divide}>
             <View style={styles.messageContainer}>
               <Text style={styles.text2}>{item.username}</Text>

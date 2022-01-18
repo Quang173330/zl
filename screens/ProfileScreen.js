@@ -40,18 +40,15 @@ function ProfileScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <ProfileAppBar navigation={navigation} />
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.user}
-        onPress={()=>navigation.navigate('MyProfileScreen')}  
+        onPress={() => navigation.navigate('MyProfileScreen')}
       >
         <View style={styles.conversationContainer}>
-          {user?.avatar == null ? (
-            <Image source={{ uri: user?.avatar }} style={styles.imageAvatar} />
-          ) : (
-            <View style={styles.textAvatar}>
-              <Text style={styles.text1}>{user?.username}</Text>
-            </View>
-          )}
+          <Image
+            source={{ uri: 'https://picsum.photos/200' }}
+            style={styles.imageAvatar}
+          />
           <View style={styles.divide}>
             <View style={styles.messageContainer}>
               <Text style={styles.text2}>{user?.username}</Text>
@@ -207,6 +204,7 @@ const styles = StyleSheet.create({
     marginTop: -windowWidth / 6,
   },
   imageAvatar: {
+    marginTop: 22,
     borderRadius: 20,
     height: 40,
     margin: 15,

@@ -40,7 +40,7 @@ function PhoneScreen({ navigation }) {
     });
     const res = await response.json();
     setListFriends(res.data.friends);
-  }, []); 
+  }, []);
 
   const renderItem = ({ item }) => {
     // const partner =
@@ -67,13 +67,14 @@ function PhoneScreen({ navigation }) {
         onPress={openChat}
       >
         <View style={styles.conversationContainer}>
-          {item.avatar == null ? (
+          <Image source={{ uri: 'https://picsum.photos/200' }} style={styles.imageAvatar} />
+          {/* {item.avatar == null ? (
             <Image source={{ uri: item.avatar }} style={styles.imageAvatar} />
           ) : (
             <View style={styles.textAvatar}>
               <Text style={styles.text1}>{item.username}</Text>
             </View>
-          )}
+          )} */}
           <View style={styles.divide}>
             <View style={styles.messageContainer}>
               <Text style={styles.text2}>{item.username}</Text>

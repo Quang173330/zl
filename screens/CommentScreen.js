@@ -99,7 +99,7 @@ function CommentScreen({ navigation, route }) {
                         // }}
                     >
                         <Image
-                            source={{ uri: item.user.avatar }}
+                            source={{ uri: 'https://picsum.photos/200' }}
                             style={styles.imageAvatar}
                         />
                     </TouchableOpacity>
@@ -113,9 +113,10 @@ function CommentScreen({ navigation, route }) {
                         //     }
                         // }}
                         >
-                        <View style={styles.textAvatar}>
-                            <Text style={styles.text1}>{item.user.username}</Text>
-                        </View>
+                        <Image
+                            source={{ uri: 'https://picsum.photos/200' }}
+                            style={styles.imageAvatar}
+                        />
                     </TouchableOpacity>
                 )}
                 <View style={styles.commentContent}>
@@ -183,7 +184,6 @@ function CommentScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 20,
         backgroundColor: colors.WHITE,
         flex: 1,
     },
