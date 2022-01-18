@@ -106,11 +106,11 @@ function ProfileScreen({ navigation }) {
           <TouchableOpacity
             style={styles.button1}
           >
-            <Ionicons name="cog-outline" size={18} color={colors.BLUE_500} />
+            <Ionicons name="shield-checkmark-outline" size={18} color={colors.BLUE_500} />
           </TouchableOpacity>
           <View style={styles.divide}>
             <View style={styles.messageContainer}>
-              <Text style={styles.text2}>Tài khoản bảo mật</Text>
+              <Text style={styles.text5}>Tài khoản bảo mật</Text>
             </View>
           </View>
         </View>
@@ -124,7 +124,7 @@ function ProfileScreen({ navigation }) {
           </TouchableOpacity>
           <View style={styles.divide}>
             <View style={styles.messageContainer}>
-              <Text style={styles.text2}>Quyền riêng tư</Text>
+              <Text style={styles.text5}>Quyền riêng tư</Text>
             </View>
           </View>
         </View>
@@ -136,13 +136,13 @@ function ProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   listSetting1: {
     marginTop: 10,
-    height: 40,
+    height: 70,
     flexDirection: 'row',
     backgroundColor: colors.WHITE
   },
   listSettings: {
     marginTop: 10,
-    height: 60,
+    height: 70,
     flexDirection: 'row',
     backgroundColor: colors.WHITE
   },

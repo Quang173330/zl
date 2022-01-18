@@ -15,10 +15,11 @@ import { windowHeight, windowWidth } from '../constants/dimensions';
 import timeAgo from '../utils/timeAgo';
 import * as colors from '../constants/colors';
 import MyProfileAppBar from '../components/More/MyProfileAppBar';
-import { URI } from '../constants/config';
+import { URI, URI_IO } from '../constants/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Entypo } from '@expo/vector-icons'; 
 import OptionsMenu from "../utils/OptionsMenu.js";
+import AutoHeightImage from 'react-native-auto-height-image';
 
 function MyProfileScreen({ navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
@@ -38,6 +39,7 @@ function MyProfileScreen({ navigation }) {
 
             },
         });
+
         const userResult = await userResponse.json();
         setUser(userResult.data)
         console.log('user', user)
@@ -102,6 +104,27 @@ function MyProfileScreen({ navigation }) {
                 } },
               ]);;
         }
+        const renderImages = () => {
+            if (item.images.length) {
+                let listUri = []
+                for (let i of item.images) {
+                    uri = URI_IO + "/files/" + i.fileName;
+                    listUri.push(uri);
+                }
+                return (
+                    <View style={styles.imageContainer1}>
+                        <View style={styles.imageContainer}>
+                            <AutoHeightImage height={windowHeight} width={windowWidth / 2.5} source={{ uri: listUri[0] }} />
+                            <AutoHeightImage height={windowHeight} width={windowWidth / 2.5} source={{ uri: listUri[1] }} />
+                        </View>
+                        <View style={styles.imageContainer}>
+                            <AutoHeightImage height={windowHeight} width={windowWidth / 2.5} source={{ uri: listUri[2] }} />
+                            <AutoHeightImage height={windowHeight} width={windowWidth / 2.5} source={{ uri: listUri[3] }} />
+                        </View>
+                    </View>
+                )
+            }
+        }
 
         return (
             <View style={styles.diaryContainer}>
@@ -119,22 +142,7 @@ function MyProfileScreen({ navigation }) {
                             options={["Edit", "Delete", "Cancel"]}
                             actions={[editPost,deletePost, item._id]}/>
                     </TouchableOpacity>
-                    {/* {item.image !== null && (
-                        <AutoHeightImage
-                            width={windowWidth - 70}
-                            source={{ uri: item.image }}
-                        />
-                    )}
-                    {item.video !== null && (
-                        <VideoPlayer
-                            video={{
-                                uri: item.video,
-                            }}
-                            videoWidth={windowWidth - 70}
-                            videoHeight={windowWidth - 70}
-                            thumbnail={{ uri: item.video }}
-                        />
-                    )} */}
+                    {renderImages()}
                     <View style={styles.actionsContainer}>
                         <TouchableOpacity style={styles.action} onPress={handleLike}>
                             <Ionicons
@@ -238,6 +246,7 @@ function MyProfileScreen({ navigation }) {
                         </Text>
                     </>
                 }
+
                 ListHeaderComponent={
                     <>
                         <View style={styles.backgroundImageContainer}>
@@ -286,6 +295,12 @@ function MyProfileScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+    imageContainer1:{
+        marginTop: 15,
+    },
+    imageContainer: {
+        flexDirection: 'row',
+    },
     container: {
         flex: 1,
     },

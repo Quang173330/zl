@@ -80,26 +80,6 @@ function EditPostScreen({ navigation, route }) {
       navigation.goBack();
     }
   };
-  const handleAddImageLibrary = async () => {
-    if (false) {
-      console.log('Bạn chỉ có thể đăng 1 tệp đa phương tiện!');
-    } else {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-  
-      console.log(result);
-  
-      if (!result.cancelled) {
-        setSelectedImages(result.uri);
-      }
-      console.log(selectedImages);
-  
-    }
-  };
 
   const handlePost = async () => {
     const token = await AsyncStorage.getItem('token');
