@@ -17,7 +17,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { URI, URI_IO } from '../constants/config';
 import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
-import OptionsMenu from "react-native-option-menu";
+import OptionsMenu from "../utils/OptionsMenu.js";
 import timeAgo from '../utils/timeAgo';
 import { windowWidth, windowHeight } from '../constants/dimensions';
 import AutoHeightImage from 'react-native-auto-height-image';
