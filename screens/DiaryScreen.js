@@ -163,7 +163,7 @@ function DiaryScreen({ navigation }) {
                             customButton={postOptionIcon}
                             buttonStyle={{ width: 32, height: 8, margin: 7.5, resizeMode: "contain" }}
                             destructiveIndex={1}
-                            options={["Edit", "Delete", "Cancel"]}
+                            options={["Ẩn bài viết", "Chặn bài viết", "Huỷ"]}
                             actions={[editPost, deletePost]} />
                     </TouchableOpacity>
 
