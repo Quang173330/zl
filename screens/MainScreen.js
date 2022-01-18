@@ -24,6 +24,7 @@ export default function MainScreen() {
             //     headerShown: false,
             // }}
             screenOptions={({ route }) => ({
+                headerShown: false,
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
 
