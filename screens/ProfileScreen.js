@@ -8,6 +8,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { windowHeight, windowWidth } from '../constants/dimensions';
@@ -36,6 +37,12 @@ function ProfileScreen({ navigation }) {
     setUser(userResult.data)
     console.log(user)
   }, []);
+  const logout = async () => {
+    await AsyncStorage.removeItem("token");
+    await AsyncStorage.removeItem("user");
+    Alert.alert("Đăng xuất thành công")
+    navigation.navigate("HomeScreen");
+  }
 
   return (
     <View style={styles.container}>
@@ -121,7 +128,23 @@ function ProfileScreen({ navigation }) {
           </TouchableOpacity>
           <View style={styles.divide}>
             <View style={styles.messageContainer}>
-              <Text style={styles.text5}>Quyền riêng tư</Text>
+              <Text style={styles.text5}>Đổi mật khẩu</Text>
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={logout}
+      >
+        <View style={styles.listSetting1}>
+          <TouchableOpacity
+            style={styles.button1}
+          >
+            <Ionicons name="log-out-outline" size={18} color={colors.BLUE_500} />
+          </TouchableOpacity>
+          <View style={styles.divide}>
+            <View style={styles.messageContainer}>
+              <Text style={styles.text5}>Đăng xuất</Text>
             </View>
           </View>
         </View>
