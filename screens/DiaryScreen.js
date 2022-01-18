@@ -14,10 +14,15 @@ import {
 import DiaryAppBar from '../components/Diary/DiaryAppBar';
 import * as colors from '../constants/colors';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { URI } from '../constants/config';
+import { URI, URI_IO } from '../constants/config';
 import { Ionicons } from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons'; 
+import { Entypo } from '@expo/vector-icons';
 import OptionsMenu from "react-native-option-menu";
+import timeAgo from '../utils/timeAgo';
+import { windowWidth, windowHeight } from '../constants/dimensions';
+import AutoHeightImage from 'react-native-auto-height-image';
+import { Video, AVPlaybackStatus } from 'expo-av';
+
 
 function DiaryScreen({ navigation }) {
 
@@ -28,7 +33,7 @@ function DiaryScreen({ navigation }) {
     const [posts, setPosts] = useState([]);
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(null);
-    const [refresh, setRefresh]=useState(false);
+    const [refresh, setRefresh] = useState(false);
     const onRefresh = React.useCallback(async () => {
         // setRefreshing(true);
         const response = await fetch(URI + 'posts/list', {
@@ -64,7 +69,6 @@ function DiaryScreen({ navigation }) {
         const res = await response.json();
         res.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         setPosts(res.data);
-        console.log(posts);
     }, []);
     const renderItem = ({ item }) => {
 
@@ -85,6 +89,7 @@ function DiaryScreen({ navigation }) {
             setRefresh(!refresh)
         };
 
+
         const postOptionIcon = (<Entypo name="dots-three-vertical" size={18} color="black" />)
 
         const editPost = () => {
@@ -93,6 +98,27 @@ function DiaryScreen({ navigation }) {
 
         const deletePost = () => {
             Alert.alert("delete");
+        }
+        const renderImages = () => {
+            if (item.images.length) {
+                let listUri = []
+                for (let i of item.images) {
+                    uri = URI_IO + "/files/" + i.fileName;
+                    listUri.push(uri);
+                }
+                return (
+                    <View>
+                        <View style={styles.imageContainer}>
+                            <AutoHeightImage height={windowHeight} width={windowWidth / 2} source={{ uri: listUri[0] }} />
+                            <AutoHeightImage height={windowHeight} width={windowWidth / 2} source={{ uri: listUri[1] }} />
+                        </View>
+                        <View style={styles.imageContainer}>
+                            <AutoHeightImage height={windowHeight} width={windowWidth / 2} source={{ uri: listUri[2] }} />
+                            <AutoHeightImage height={windowHeight} width={windowWidth / 2} source={{ uri: listUri[3] }} />
+                        </View>
+                    </View>
+                )
+            }
         }
 
         return (
@@ -114,13 +140,13 @@ function DiaryScreen({ navigation }) {
                         </TouchableOpacity>
                     ) : ( */}
                     <TouchableOpacity
-                    onPress={() => {
-                        if (item.author._id == user.id) {
-                            navigation.navigate('MyProfileScreen');
-                        } else {
-                            navigation.navigate('OtherProfileScreen', { other: item.author });
-                        }
-                    }}
+                        onPress={() => {
+                            if (item.author._id == user.id) {
+                                navigation.navigate('MyProfileScreen');
+                            } else {
+                                navigation.navigate('OtherProfileScreen', { other: item.author });
+                            }
+                        }}
                     >
                         <View style={styles.diaryTextAvatar}>
                             <Text style={styles.text1}>{item.author.username}</Text>
@@ -129,17 +155,17 @@ function DiaryScreen({ navigation }) {
 
                     <View>
                         <Text style={styles.text2}>{item.author.username}</Text>
-                        {/* <Text style={styles.text3}>{timeAgo(item.createdAt)}</Text> */}
+                        <Text style={styles.text3}>{timeAgo(new Date(item.createdAt))}</Text>
                     </View>
-                    <TouchableOpacity style={{marginLeft: 240}}>
+                    <TouchableOpacity style={{ marginLeft: 240 }}>
                         <OptionsMenu
                             customButton={postOptionIcon}
                             buttonStyle={{ width: 32, height: 8, margin: 7.5, resizeMode: "contain" }}
                             destructiveIndex={1}
                             options={["Edit", "Delete", "Cancel"]}
-                            actions={[editPost,deletePost]}/>
+                            actions={[editPost, deletePost]} />
                     </TouchableOpacity>
-                    
+
                 </View>
                 <Text
                     style={{
@@ -150,6 +176,7 @@ function DiaryScreen({ navigation }) {
                     }}>
                     {item.described}
                 </Text>
+                {renderImages()}
                 {/* {item.image !== null && (
                     <AutoHeightImage width={windowWidth} source={{ uri: item.image }} />
                 )}
@@ -176,10 +203,10 @@ function DiaryScreen({ navigation }) {
                         <Text style={styles.textAction}>{item.like.length}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                    style={styles.action}
-                    onPress={() =>
-                        navigation.navigate('CommentScreen', { postId: item._id })
-                    }
+                        style={styles.action}
+                        onPress={() =>
+                            navigation.navigate('CommentScreen', { postId: item._id })
+                        }
                     >
                         <Ionicons
                             name="chatbox-ellipses-outline"
@@ -227,6 +254,9 @@ function DiaryScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+    imageContainer: {
+        flexDirection: 'row',
+    },
     container: {
         backgroundColor: colors.BLUE_GREY_50,
         flex: 1,

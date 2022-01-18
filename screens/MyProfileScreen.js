@@ -220,6 +220,7 @@ function MyProfileScreen({ navigation }) {
                 </View>
             </Modal>
             <MyProfileAppBar navigation={navigation} user={user} />
+
             <FlatList
                 ListEmptyComponent={
                     <>

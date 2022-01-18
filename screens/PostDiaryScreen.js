@@ -7,16 +7,20 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Image,
+  FlatList,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AutoHeightImage from 'react-native-auto-height-image';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
 import { windowWidth } from '../constants/dimensions';
 import * as colors from '../constants/colors';
 import * as MediaLibrary from "expo-media-library";
 import { URI } from '../constants/config';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from "expo-file-system";
 import { Video, AVPlaybackStatus } from 'expo-av';
+
 
 
 function PostDiaryScreen({ navigation }) {
@@ -29,16 +33,17 @@ function PostDiaryScreen({ navigation }) {
 
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]);
-  const [selectedImages, setSelectedImages] = useState(null);
+  const [selectedImages, setSelectedImages] = useState([]);
   const [selectedVideos, setSelectedVideos] = useState([]);
   const [user, setUser] = useState({});
+  const [tab, setTab] = useState('');
   useEffect(async () => {
     const user = await AsyncStorage.getItem('user');
     setUser(JSON.parse(user));
     const res = await MediaLibrary.requestPermissionsAsync()
     if (res.granted) {
       MediaLibrary
-        .getAssetsAsync({ first: 3, mediaType: "photo" })
+        .getAssetsAsync({ first: 6, mediaType: "photo" })
         .then((result) => {
           setImages(result.assets);
         });
@@ -50,7 +55,7 @@ function PostDiaryScreen({ navigation }) {
           setVideos(result.assets);
         });
     }
-  },[]);
+  }, []);
 
   const handleBack = () => {
     if (text || selectedImages || selectedVideos) {
@@ -66,29 +71,25 @@ function PostDiaryScreen({ navigation }) {
       navigation.goBack();
     }
   };
-  const handleAddImageLibrary = async () => {
-    if (false) {
-      console.log('Bạn chỉ có thể đăng 1 tệp đa phương tiện!');
-    } else {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-  
-      console.log(result);
-  
-      if (!result.cancelled) {
-        setSelectedImages(result.uri);
-      }
-      console.log(selectedImages);
-  
-    }
-  };
 
   const handlePost = async () => {
     const token = await AsyncStorage.getItem('token');
+    let postImages = []
+    if (selectedImages.length) {
+      for (let item of selectedImages) {
+        let myAssetId = item.uri.slice(5);
+        let returnedAssetInfo = await MediaLibrary.getAssetInfoAsync(
+          myAssetId
+        );
+        console.log('local uri', returnedAssetInfo.localUri);
+        const base64 = await FileSystem.readAsStringAsync(
+          returnedAssetInfo.localUri,
+          { encoding: "base64" }
+        );
+        let image = "data:image/jpeg;base64," + base64
+        postImages.push(image);
+      }
+    }
     const response = await fetch(URI + 'posts/create', {
       method: "POST",
       headers: {
@@ -99,12 +100,206 @@ function PostDiaryScreen({ navigation }) {
       },
       body: JSON.stringify({
         described: text,
+        images: postImages
       }),
     });
+    console.log('2')
     const res = await response.json();
     console.log(res.data)
+    console.log('3')
     navigation.goBack();
   }
+  const renderSelectedImages = () => {
+    console.log(selectedImages)
+    if (selectedImages.length > 0) {
+      return (
+        <View style={styles.image_wdyt_box_container}>
+          {selectedImages.length <= 2 ? (
+            <Image
+              style={styles.upload_images}
+              source={{ width: 50 + "%", height: 160, uri: selectedImages[0].uri }}
+            />
+          ) : selectedImages.length == 3 ? (
+            <Image
+              style={styles.upload_images}
+              source={{ width: 66.66 + "%", height: 223, uri: selectedImages[0].uri }}
+            />
+          ) : selectedImages.length == 4 ? (
+            <Image
+              style={styles.upload_images}
+              source={{ width: 60 + "%", height: 208, uri: selectedImages[0].uri }}
+            />
+          ) : null}
+          <View style={styles.image_wdyt_box_display_column}>
+            {selectedImages.length == 2 ? (
+              <Image
+                style={styles.upload_images}
+                source={{ width: 50 + "%", height: 160, uri: selectedImages[1].uri }}
+              />
+            ) : selectedImages.length == 3 ? (
+              <Image
+                style={styles.upload_images}
+                source={{
+                  width: 33.33 + "%",
+                  height: 110,
+                  uri: selectedImages[1].uri,
+                }}
+              />
+            ) : selectedImages.length == 4 ? (
+              <Image
+                style={styles.upload_images}
+                source={{ width: 41 + "%", height: 130, uri: selectedImages[1].uri }}
+              />
+            ) : null}
+            <View style={styles.image_wdyt_box_display_row}>
+              {selectedImages.length == 3 ? (
+                <Image
+                  style={styles.upload_images}
+                  source={{
+                    width: 33.33 + "%",
+                    height: 110,
+                    uri: selectedImages[2].uri,
+                  }}
+                />
+              ) : selectedImages.length == 4 ? (
+                <Image
+                  style={styles.upload_images}
+                  source={{ width: 20 + "%", height: 75, uri: selectedImages[2].uri }}
+                />
+              ) : null}
+              {selectedImages.length == 4 ? (
+                <Image
+                  style={styles.upload_images}
+                  source={{ width: 20 + "%", height: 75, uri: selectedImages[3].uri }}
+                />
+              ) : null}
+            </View>
+          </View>
+        </View>
+      );
+    } else return null;
+  };
+  const renderSelectedVideo = () => {
+    console.log(selectedVideos)
+    if (selectedVideos.length > 0) {
+      console.log('áksjsk');
+      return (
+        <Video
+          style={styles.video}
+          source={{
+            uri: selectedVideos[0].uri,
+          }}
+          useNativeControls
+          resizeMode="contain"
+          isLooping
+        />
+      );
+    } else return null;
+  };
+  const renderImages = ({ item, index }) => {
+    let isSelected = false;
+    for (let i = 0; i < selectedImages.length; i++) {
+      if (selectedImages[i] == index) {
+        isSelected = true;
+      }
+    }
+    return (
+      <TouchableOpacity
+        style={styles.image_container}
+        onPress={() => {
+          handleImageSelectionMultiple(item, index);
+        }}
+      >
+        <Image style={styles._image} source={{ uri: item.uri }} />
+
+        {isSelected ? (
+          <Ionicons
+            style={styles._image_ticker}
+            name="checkmark-circle"
+            size={18}
+            color={colors.BLUE_500}
+          />
+        ) : null}
+      </TouchableOpacity>
+    );
+  };
+  const renderVideos = ({ item, index }) => {
+    let isSelected = false;
+    for (let i = 0; i < selectedVideos.length; i++) {
+      if (selectedVideos[i] == index) {
+        isSelected = true;
+      }
+    }
+    return (
+      <TouchableOpacity
+        style={styles.image_container}
+        onPress={() => {
+          handleVideoSelectionMultiple(item, index);
+        }}
+      >
+        <Image style={styles._image} source={{ uri: item.uri }} />
+        {isSelected ? (
+          <Ionicons
+            style={styles._image_ticker}
+            name="checkmark-circle"
+            size={18}
+            color={colors.BLUE_500}
+          />
+        ) : null}
+        <View style={styles.duration_container}>
+          <Text style={styles.duration_text}>
+            {Math.floor(item.duration / 60)}:
+            {item.duration - 60 * Math.floor(item.duration / 60)}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+  const handleImageSelectionMultiple = (item, selectedItem) => {
+    console.log('abajss')
+    let isItemSelected = false;
+
+    let index = 0;
+    for (let i = 0; i < selectedImages.length; i++) {
+      if (selectedImages[i] === selectedItem) {
+        isItemSelected = true;
+        index = i;
+      }
+    }
+    if (isItemSelected) {
+      selectedImages.splice(index, 1);
+    } else {
+      if (
+        selectedImages.length < 4 &&
+        selectedVideos.length == 0
+      ) {
+        selectedImages.push(item);
+      }
+    }
+    setSelectedImages(selectedImages);
+  };
+
+  const handleVideoSelectionMultiple = (item, selectedItem) => {
+    let isItemSelected = false;
+    let index = 0;
+    for (let i = 0; i < selectedVideos.length; i++) {
+      if (selectedVideos[i] === selectedItem) {
+        isItemSelected = true;
+        index = i;
+      }
+    }
+    if (isItemSelected) {
+      selectedVideos.splice(index, 1);
+    } else {
+      if (
+        selectedVideos.length < 1 &&
+        selectedImages.length == 0
+      ) {
+        selectedVideos.push(item);
+      }
+    }
+    setSelectedVideos(selectedVideos);
+  };
 
   return (
     <View style={styles.container}>
@@ -138,8 +333,9 @@ function PostDiaryScreen({ navigation }) {
           value={text}
           onChangeText={txt => setText(txt)}
         />
-        
-          {/* <View>
+        {renderSelectedImages()}
+        {renderSelectedVideo()}
+        {/* <View>
             <AutoHeightImage width={windowWidth} source={{ uri: 'ph://4BE604D5-1432-493D-ADD0-AAA20E982F1F' }} />
             <TouchableOpacity
               style={styles.deleteMedia}
@@ -147,8 +343,8 @@ function PostDiaryScreen({ navigation }) {
               <Ionicons name="close-outline" size={18} color={colors.WHITE} />
             </TouchableOpacity>
           </View> */}
-          
-          {/* <View>
+
+        {/* <View>
             <Video
               ref={video}
               source={{
@@ -168,16 +364,13 @@ function PostDiaryScreen({ navigation }) {
         <View style={styles.mediaContainer}>
           <TouchableOpacity
             style={styles.mediaButton}
+            onPress={() => setTab('Photos')}
           >
-            <Ionicons name="camera-outline" size={28} color={colors.GREY_600} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.mediaButton}
-            onPress={handleAddImageLibrary}>
             <Ionicons name="image-outline" size={28} color={colors.GREY_600} />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.mediaButton}
+            onPress={() => setTab('Videos')}
           >
             <Ionicons
               name="videocam-outline"
@@ -185,22 +378,82 @@ function PostDiaryScreen({ navigation }) {
               color={colors.GREY_600}
             />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.mediaButton}
-          >
-            <Ionicons
-              name="play-circle-outline"
-              size={28}
-              color={colors.GREY_600}
-            />
-          </TouchableOpacity>
         </View>
       </View>
+      {tab == "Photos" ? (
+        <View style={styles.flatlist_container}>
+          <FlatList
+            style={styles.image_picker}
+            data={images}
+            keyExtractor={(item, index) => index.toString()}
+            numColumns={3}
+            renderItem={renderImages}
+          />
+        </View>
+      ) : tab == "Videos" ? (
+        <View style={styles.flatlist_container}>
+          <FlatList
+            style={styles.image_picker}
+            data={videos}
+            keyExtractor={(item, index) => index.toString()}
+            numColumns={3}
+            renderItem={renderVideos}
+          />
+        </View>
+      ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  upload_images: {
+    marginLeft: 3,
+    marginTop: 3,
+  },
+  image_wdyt_box_display_column: {
+    width: 100 + "%",
+    flexDirection: 'column',
+  },
+  image_wdyt_box_display_row: {
+    width: 100 + "%",
+    flexDirection: 'row',
+  },
+  image_wdyt_box_container: {
+    flexDirection: 'row',
+  },
+  _image_ticker: {
+    top: 3,
+    right: 3,
+    position: 'absolute',
+    width: 20,
+    height: 20,
+  },
+  duration_text: {
+    marginLeft: 5,
+    marginRight: 5,
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 13,
+  },
+  duration_container: {
+    position: 'absolute',
+    bottom: 5,
+    right: 5,
+    backgroundColor: '#696969',
+    borderRadius: 15,
+  },
+  _image: {
+    width: '100%',
+    height: '100%',
+  },
+  image_container: {
+    width: '32%',
+    height: 120,
+    marginLeft: '1%',
+    marginTop: 5,
+    borderWidth: 1,
+    borderColor: colors.GREY_600,
+  },
   container: {
     backgroundColor: colors.WHITE,
     flex: 1,
@@ -263,6 +516,13 @@ const styles = StyleSheet.create({
   },
   mediaButton: {
     marginHorizontal: 10,
+  },
+  flatlist_container: {
+    width: '100%',
+    height: 300,
+  },
+  image_picker: {
+    width: '100%',
   },
 });
 

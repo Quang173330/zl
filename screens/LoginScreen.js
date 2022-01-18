@@ -140,7 +140,6 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     title: {
-        marginTop: 35,
         backgroundColor: '#ECEFF1',
         paddingHorizontal: 10,
         paddingVertical: 12,
